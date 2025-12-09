@@ -1,7 +1,7 @@
-# Lexical attributes for Aromanian
+﻿# Lexical attributes for Aromanian
 # Based on Romanian lex_attrs with Aromanian-specific patterns
 
-from ...attrs import LIKE_NUM
+from spacy.attrs import LIKE_NUM
 
 # Aromanian number words
 # Based on corpus analysis (senisioi/aromanian Tales dataset)
@@ -9,59 +9,59 @@ from ...attrs import LIKE_NUM
 
 _num_words = {
     # Cardinal numbers (Cunia orthography) - verified from corpus
-    "un", "una", "unu", "unã",  # one (masc/fem)
-    "doi", "doauã", "dauã",  # two (masc/fem) - "doauã" is common in corpus
+    "un", "una", "unu", "unÃ£",  # one (masc/fem)
+    "doi", "doauÃ£", "dauÃ£",  # two (masc/fem) - "doauÃ£" is common in corpus
     "trei",  # three
     "patru",  # four
     "tsintsi",  # five
     "shase", "shasi",  # six
     "shapte", "shapti",  # seven
     "optu",  # eight
-    "noauã", "nauã",  # nine - "noauã" is in corpus
+    "noauÃ£", "nauÃ£",  # nine - "noauÃ£" is in corpus
     "dzatsi", "dzatse",  # ten
     
     # Teens
-    "unsprãdzatsi", "unsprãdzatse",
-    "doisprãdzatsi", "doisprãdzatse",
-    "treissprãdzatsi", "treissprãdzatse",
-    "paisprãdzatsi", "paisprãdzatse",
-    "tsintsisprãdzatsi", "tsintsisprãdzatse",
-    "shasisprãdzatsi", "shasisprãdzatse",
-    "shaptisprãdzatsi", "shaptisprãdzatse",
-    "optusprãdzatsi", "optusprãdzatse",
-    "nauãsprãdzatsi", "noauãsprãdzatse",
+    "unsprÃ£dzatsi", "unsprÃ£dzatse",
+    "doisprÃ£dzatsi", "doisprÃ£dzatse",
+    "treissprÃ£dzatsi", "treissprÃ£dzatse",
+    "paisprÃ£dzatsi", "paisprÃ£dzatse",
+    "tsintsisprÃ£dzatsi", "tsintsisprÃ£dzatse",
+    "shasisprÃ£dzatsi", "shasisprÃ£dzatse",
+    "shaptisprÃ£dzatsi", "shaptisprÃ£dzatse",
+    "optusprÃ£dzatsi", "optusprÃ£dzatse",
+    "nauÃ£sprÃ£dzatsi", "noauÃ£sprÃ£dzatse",
     
     # Tens (Greek-influenced for 20)
-    "yinghits", "yinghitsi",  # twenty (from Greek είκοσι)
-    "treidzãts", "treidzãtsi",  # thirty
-    "patrudzãts", "patrudzãtsi",  # forty
-    "tsindzãts", "tsindzãtsi",  # fifty
-    "shaidzãts", "shaidzãtsi",  # sixty
-    "shaptidzãts", "shaptidzãtsi",  # seventy
-    "optudzãts", "optudzãtsi",  # eighty
-    "nauãdzãts", "noauãdzãtsi",  # ninety
+    "yinghits", "yinghitsi",  # twenty (from Greek ÎµÎ¯ÎºÎ¿ÏƒÎ¹)
+    "treidzÃ£ts", "treidzÃ£tsi",  # thirty
+    "patrudzÃ£ts", "patrudzÃ£tsi",  # forty
+    "tsindzÃ£ts", "tsindzÃ£tsi",  # fifty
+    "shaidzÃ£ts", "shaidzÃ£tsi",  # sixty
+    "shaptidzÃ£ts", "shaptidzÃ£tsi",  # seventy
+    "optudzÃ£ts", "optudzÃ£tsi",  # eighty
+    "nauÃ£dzÃ£ts", "noauÃ£dzÃ£tsi",  # ninety
     
     # Larger numbers
-    "sutã", "suta", "sute",  # hundred - "suta" found in corpus
+    "sutÃ£", "suta", "sute",  # hundred - "suta" found in corpus
     "njilji", "njilju",  # thousand - found in corpus
     
     # DIARO orthography variants
-    "dauă", "țintsi", "șase", "șapte", "năuă", "dzăț", "dzățe",
-    "sută", "ńilji", "ńilju",
+    "dauÄƒ", "È›intsi", "È™ase", "È™apte", "nÄƒuÄƒ", "dzÄƒÈ›", "dzÄƒÈ›e",
+    "sutÄƒ", "Å„ilji", "Å„ilju",
     
     # Ordinal numbers
-    "protlu", "protã", "prota",  # first
-    "doilea", "dauãlea", "doauãlea",  # second
+    "protlu", "protÃ£", "prota",  # first
+    "doilea", "dauÃ£lea", "doauÃ£lea",  # second
     "treilea", "treia",  # third
     "patrulea", "patra",  # fourth
-    "ultimu", "ultimã",  # last
+    "ultimu", "ultimÃ£",  # last
 }
 
 # Fractions and special numbers
 _num_words.update({
-    "njiliunã", "miliunã",  # million (Cunia/DIARO)
-    "giumãtati", "giumătate",  # half
-    "sfãrtu", "sfărtu",  # quarter
+    "njiliunÃ£", "miliunÃ£",  # million (Cunia/DIARO)
+    "giumÃ£tati", "giumÄƒtate",  # half
+    "sfÃ£rtu", "sfÄƒrtu",  # quarter
     "zero", "zeru",
 })
 
@@ -85,7 +85,7 @@ def like_num(text):
     if text in _num_words:
         return True
     
-    # Check for compound numbers like "dauã-dzatsi" (twenty-two)
+    # Check for compound numbers like "dauÃ£-dzatsi" (twenty-two)
     if "-" in text:
         parts = text.split("-")
         if all(p in _num_words for p in parts):
@@ -97,3 +97,5 @@ def like_num(text):
 LEX_ATTRS = {
     LIKE_NUM: like_num,
 }
+
+

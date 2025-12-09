@@ -1,9 +1,9 @@
-# Tokenizer exceptions for Aromanian
+﻿# Tokenizer exceptions for Aromanian
 # Based on Romanian exceptions with Aromanian-specific additions
 
-from ...symbols import ORTH, NORM
-from ...util import update_exc
-from ..tokenizer_exceptions import BASE_EXCEPTIONS
+from spacy.symbols import ORTH, NORM
+from spacy.util import update_exc
+from spacy.lang.tokenizer_exceptions import BASE_EXCEPTIONS
 from .punctuation import _make_rup_variants
 
 _exc = {}
@@ -43,7 +43,7 @@ _aromanian_abbrevs = [
     "d-lu",    # domnul (Mr.)
     "d-na",    # doamna (Mrs.)
     "d-ta",    # dumneata (you formal)
-    "d-voastã",  # dumneavoastră
+    "d-voastÃ£",  # dumneavoastrÄƒ
     "dvs.",
     # Common abbreviations
     "etc.",
@@ -65,8 +65,8 @@ _aromanian_abbrevs = [
     "dr.",
     "ing.",
     # Aromanian-specific
-    "arm.",  # armãneashti
-    "rom.",  # romãneashti
+    "arm.",  # armÃ£neashti
+    "rom.",  # romÃ£neashti
     "gr.",   # greceashti
 ]
 
@@ -79,7 +79,7 @@ for orth in _aromanian_abbrevs:
 # They should be handled by the Matcher or EntityRuler instead
 # Example MWEs for future reference:
 #   "tu soni" (finally), "di arada" (usually), "ma multu" (more)
-#   "ma putsãn" (less), "cãt ma" (as...as), "shi cã" (and that)
+#   "ma putsÃ£n" (less), "cÃ£t ma" (as...as), "shi cÃ£" (and that)
 
 # Contractions and clitics - based on corpus analysis (senisioi/aromanian)
 # Most frequent patterns from corpus.rup_cun analysis:
@@ -90,22 +90,22 @@ _contractions = [
     ("s-lu", [{ORTH: "s-"}, {ORTH: "lu"}]),
     ("s-lji", [{ORTH: "s-"}, {ORTH: "lji"}]),
     ("s-u", [{ORTH: "s-"}, {ORTH: "u"}]),
-    ("s-hibã", [{ORTH: "s-"}, {ORTH: "hibã"}]),
-    ("s-facã", [{ORTH: "s-"}, {ORTH: "facã"}]),
+    ("s-hibÃ£", [{ORTH: "s-"}, {ORTH: "hibÃ£"}]),
+    ("s-facÃ£", [{ORTH: "s-"}, {ORTH: "facÃ£"}]),
     ("S-mi", [{ORTH: "S-"}, {ORTH: "mi"}]),
     ("s-mi", [{ORTH: "s-"}, {ORTH: "mi"}]),
     ("s-nji", [{ORTH: "s-"}, {ORTH: "nji"}]),
-    ("s-yinã", [{ORTH: "s-"}, {ORTH: "yinã"}]),
+    ("s-yinÃ£", [{ORTH: "s-"}, {ORTH: "yinÃ£"}]),
     ("S-featse", [{ORTH: "S-"}, {ORTH: "featse"}]),
-    ("s-tsã", [{ORTH: "s-"}, {ORTH: "tsã"}]),
+    ("s-tsÃ£", [{ORTH: "s-"}, {ORTH: "tsÃ£"}]),
     ("s-ti", [{ORTH: "s-"}, {ORTH: "ti"}]),
-    ("s-ducã", [{ORTH: "s-"}, {ORTH: "ducã"}]),
-    ("s-lã", [{ORTH: "s-"}, {ORTH: "lã"}]),
-    ("s-veadã", [{ORTH: "s-"}, {ORTH: "veadã"}]),
-    ("s-turnã", [{ORTH: "s-"}, {ORTH: "turnã"}]),
-    ("s-vã", [{ORTH: "s-"}, {ORTH: "vã"}]),
+    ("s-ducÃ£", [{ORTH: "s-"}, {ORTH: "ducÃ£"}]),
+    ("s-lÃ£", [{ORTH: "s-"}, {ORTH: "lÃ£"}]),
+    ("s-veadÃ£", [{ORTH: "s-"}, {ORTH: "veadÃ£"}]),
+    ("s-turnÃ£", [{ORTH: "s-"}, {ORTH: "turnÃ£"}]),
+    ("s-vÃ£", [{ORTH: "s-"}, {ORTH: "vÃ£"}]),
     ("s-ljea", [{ORTH: "s-"}, {ORTH: "ljea"}]),
-    ("s-mãcã", [{ORTH: "s-"}, {ORTH: "mãcã"}]),
+    ("s-mÃ£cÃ£", [{ORTH: "s-"}, {ORTH: "mÃ£cÃ£"}]),
     ("s-li", [{ORTH: "s-"}, {ORTH: "li"}]),
     
     # shi- prefix + clitics
@@ -143,13 +143,13 @@ _contractions = [
     ("tse-lji", [{ORTH: "tse"}, {ORTH: "-"}, {ORTH: "lji"}]),
     
     # Possessive forms
-    ("mã-sa", [{ORTH: "mã-sa"}]),  # his/her mother
-    ("tatã-su", [{ORTH: "tatã-su"}]),  # his father
+    ("mÃ£-sa", [{ORTH: "mÃ£-sa"}]),  # his/her mother
+    ("tatÃ£-su", [{ORTH: "tatÃ£-su"}]),  # his father
     ("frate-su", [{ORTH: "frate-su"}]),  # his brother
     ("sor-sa", [{ORTH: "sor-sa"}]),  # his/her sister
     
-    # de-amirã compound
-    ("de-amirã", [{ORTH: "de"}, {ORTH: "-"}, {ORTH: "amirã"}]),
+    # de-amirÃ£ compound
+    ("de-amirÃ£", [{ORTH: "de"}, {ORTH: "-"}, {ORTH: "amirÃ£"}]),
     ("de-a", [{ORTH: "de"}, {ORTH: "-"}, {ORTH: "a"}]),
     
     # D-iu (de + iu = where from)
@@ -176,7 +176,7 @@ for orth, expansion in _contractions:
 
 # Greek-influenced words that should not be split
 _greek_loans = [
-    "efharisto",  # thank you (ευχαριστώ)
+    "efharisto",  # thank you (ÎµÏ…Ï‡Î±ÏÎ¹ÏƒÏ„ÏŽ)
     "kalimera",   # good morning
     "kalispera",  # good evening
     "parakalo",   # please
@@ -202,7 +202,7 @@ _particles = [
     "escu",
     "vahi",
     # Discourse markers
-    "mãrã",
+    "mÃ£rÃ£",
     "ehei",
     "bre",
     "apoia",  # then
@@ -215,7 +215,7 @@ for particle in _particles:
 _apostrophe_words = [
     "l'i",
     "l'imba",
-    "l'imbã",
+    "l'imbÃ£",
     "l'ipidu",
     "n'",
     "n'i",
@@ -225,3 +225,6 @@ for word in _apostrophe_words:
     _exc[word] = [{ORTH: word}]
 
 TOKENIZER_EXCEPTIONS = update_exc(BASE_EXCEPTIONS, _exc)
+
+
+
