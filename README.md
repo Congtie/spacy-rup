@@ -1,119 +1,164 @@
-# spaCy Language Support for Aromanian (rup)
+﻿# spaCy Language Support for Aromanian (rup)
 
-This repository contains the language module for Aromanian (Macedo-Romanian) in spaCy.
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![spaCy 3.x](https://img.shields.io/badge/spaCy-3.x-green.svg)](https://spacy.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A complete spaCy language module for **Aromanian** (Macedo-Romanian), an endangered Eastern Romance language spoken in the Balkans.
 
 ## Language Code
 
-- **ISO 639-3:** `rup` (Aromanian / Macedo-Romanian)
+- **ISO 639-3:** `rup` (Aromanian / Macedo-Romanian / Armaneashti)
+- **Speakers:** ~250,000 (Greece, Albania, North Macedonia, Romania, Bulgaria, Serbia)
 
 ## Features
 
 | Component | Status | Description |
 |-----------|--------|-------------|
-| Tokenizer | ✅ | Rules for Aromanian clitics (s-, sh-, n-, etc.) |
-| Stop Words | ✅ | 163+ function words |
-| Lex Attrs | ✅ | Number detection (un, doi, trei, dzatsi...) |
-| Orthography | ✅ | Conversion between Cunia and DIARO standards |
-| POS Tagger | ❌ | Requires training data |
-| NER | ❌ | Requires training data |
-| Lemmatizer | ❌ | Requires dictionary |
-
-## Orthographic Standards
-
-Aromanian has multiple writing systems:
-
-| Standard | Central Vowel | Special Consonants | Example |
-|----------|--------------|-------------------|---------|
-| **DIARO** (Caragiu-Marioțeanu) | ă, â, î | d̦, ľ, ń, ș, ț | Bună dzua! |
-| **Cunia** (Tiberiu Cunia) | ã | dz, lj, nj, sh, ts | Bunã dzua! |
-
-This module handles both standards and can convert between them.
+| Tokenizer | :white_check_mark: | Rules for Aromanian clitics (s-, sh-, n-, lj-, etc.) |
+| Stop Words | :white_check_mark: | 163+ function words |
+| Lex Attrs | :white_check_mark: | Number detection (un, doi, trei, dzatsi...) |
+| Orthography | :white_check_mark: | Conversion between Cunia and DIARO standards |
+| **Lemmatizer** | :white_check_mark: | Lookup tables + suffix rules for verbs, nouns, adjectives |
+| POS Tagger | :x: | Requires training data |
+| NER | :x: | Requires training data |
 
 ## Installation
 
-### Option 1: Copy to spaCy installation
+`ash
+# Clone the repository
+git clone https://github.com/Congtie/spacy-rup.git
+cd spacy-rup
 
-```bash
-# Find your spaCy installation
-python -c "import spacy; print(spacy.__file__)"
+# Install in development mode
+pip install -e .
+`
 
-# Copy the module
-cp -r spacy_rup /path/to/site-packages/spacy/lang/rup
-```
+## Quick Start
 
-### Option 2: Use install script
-
-```bash
-python install_rup.py
-```
-
-## Usage
-
-```python
+`python
 import spacy
 
 # Create a blank Aromanian pipeline
 nlp = spacy.blank('rup')
 
-# Or import the language class directly
-from spacy.lang.rup import Aromanian
-nlp = Aromanian()
+# Add the lemmatizer
+nlp.add_pipe('aromanian_lemmatizer')
 
-# Tokenize text
-doc = nlp("Bunã dzua! S-hibã ghine.")
+# Process text
+doc = nlp("Ficiorlu featse un lucru multu bun.")
 for token in doc:
-    print(f"{token.text:15} stop={token.is_stop}")
-```
+    print(f"{token.text:15} -> {token.lemma_}")
+`
 
 Output:
-```
-Bunã            stop=False
-dzua            stop=False
-!               stop=False
-S-              stop=False
-hibã            stop=False
-ghine           stop=True
-.               stop=False
-```
+`
+Ficiorlu        -> ficior
+featse          -> fac
+un              -> un
+lucru           -> lucru
+multu           -> multu
+bun             -> bun
+.               -> .
+`
 
-## Orthography Conversion
+## Lemmatizer
 
-```python
+The lemmatizer handles Aromanian morphology through:
+
+### Verb Lemmatization
+Supports irregular verbs with full conjugation lookup:
+
+| Verb | Forms | Lemma |
+|------|-------|-------|
+| a hi (to be) | hiu, eshti, easti, eara, fu, fura | `hiu` |
+| a avea (to have) | am, ai, are, avea, aveam, avura | `am` |
+| a fac (to do) | fac, fatse, featse, featsira | `fac` |
+| a dzac (to say) | dzac, dzatse, dzatsea | `dzac` |
+| a vrea (to want) | vrea, va, vor, vrura | `vrea` |
+| a vedu (to see) | vedu, vedz, vidzu, vidzura | `vedu` |
+| a yinu (to come) | yin, yine, yinea, vinje | `yinu` |
+| a ljau (to take) | ljau, ljea, lo, loara | `ljau` |
+
+### Noun Lemmatization
+Removes definite articles:
+
+| With Article | Lemma | Meaning |
+|--------------|-------|---------|
+| ficiorlu | ficior | boy |
+| amiralu | amira | emperor |
+| vulpea | vulpe | fox |
+| calea | cale | way |
+| ocljilji | oclji | eyes |
+
+### Example
+
+`python
+import spacy
+
+nlp = spacy.blank('rup')
+nlp.add_pipe('aromanian_lemmatizer')
+
+# Verb lemmatization
+doc = nlp("Eara una oara un om shi avea trei ficiori")
+changes = [(t.text, t.lemma_) for t in doc if t.text.lower() != t.lemma_]
+print(changes)
+# [('Eara', 'hiu'), ('avea', 'am')]
+`
+
+## Orthographic Standards
+
+Aromanian has multiple writing systems. This module supports both:
+
+| Standard | Central Vowel | Special Consonants | Example |
+|----------|--------------|-------------------|---------|
+| **DIARO** | a, a, i | d, l, n, s, t (with diacritics) | Buna dzua! |
+| **Cunia** | a (breve) | dz, lj, nj, sh, ts | Buna dzua! |
+
+### Conversion
+
+`python
 from spacy_rup.orthography import to_cunia, to_diaro, detect_orthography
 
+# Detect standard
+detect_orthography("Shi una vulpe")  # "cunia"
+
 # Convert between standards
-text_diaro = "Și ună vulpe"
-text_cunia = to_cunia(text_diaro)  # "Shi unã vulpe"
+text_diaro = "Si una vulpe"
+text_cunia = to_cunia(text_diaro)  # "Shi una vulpe"
+`
 
-# Detect which standard is used
-detect_orthography("Shi unã vulpe")  # "cunia"
-detect_orthography("Și ună vulpe")   # "diaro"
-```
+## Project Structure
 
-## Testing
-
-```bash
-# Run local tests (no spaCy installation required)
-python test_local.py
-
-# After installation, run full tests
-python -c "from spacy.lang.rup import Aromanian; nlp = Aromanian(); print(nlp('Test').text)"
-```
+`
+spacy-rup/
+ spacy_rup/
+    __init__.py          # Language class (Aromanian)
+    stop_words.py        # 163+ stop words
+    tokenizer_exceptions.py  # Clitic contractions
+    punctuation.py       # Prefix/suffix rules
+    lex_attrs.py         # Number words
+    orthography.py       # Cunia <-> DIARO conversion
+    lemmatizer.py        # Lookup tables and rules
+    lemma_component.py   # spaCy pipeline component
+ setup.py
+ README.md
+`
 
 ## Data Sources
 
-- **Corpus:** [senisioi/aromanian](https://github.com/senisioi/aromanian) - ~2000 parallel sentences
+- **Corpus:** [senisioi/aromanian](https://github.com/senisioi/aromanian) - ~2100 parallel sentences (Aromanian Tales)
 - **Conversion Scripts:** [AroTranslate](https://github.com/arotranslate/AroTranslate)
 
 ## Contributing
 
-Contributions are welcome! Areas that need improvement:
+Contributions welcome! Areas that need help:
 
-1. More tokenizer exceptions for complex clitics
-2. POS tagging training data
-3. Named Entity Recognition data
-4. Lemmatization rules or dictionary
-5. Improved orthography conversion
+1. **More verb forms** - Add conjugations to `lemmatizer.py`
+2. **POS tagger training** - Annotated data needed
+3. **Named Entity Recognition** - Location/person names
+4. **Dialect variations** - Farsherot, Gramustean, etc.
+5. **Testing** - More test cases
 
 ## License
 
@@ -124,3 +169,8 @@ MIT License
 - [Aromanian on Wikipedia](https://en.wikipedia.org/wiki/Aromanian_language)
 - [spaCy Language Data](https://spacy.io/usage/adding-languages)
 - [ISO 639-3 rup](https://iso639-3.sil.org/code/rup)
+- [Aromanian Grammar](https://aromanian.org/)
+
+---
+
+*Buna dzua! S-hiba ghine!* (Good day! May it be well!)
