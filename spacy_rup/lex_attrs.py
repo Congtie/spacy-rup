@@ -10,14 +10,14 @@ from spacy.attrs import LIKE_NUM
 _num_words = {
     # Cardinal numbers (Cunia orthography) - verified from corpus
     "un", "una", "unu", "unÃ£",  # one (masc/fem)
-    "doi", "doauÃ£", "dauÃ£",  # two (masc/fem) - "doauÃ£" is common in corpus
+    "doi", "doaua", "doauÃ£", "dauÃ£",  # two (masc/fem) - "doaua" is common in corpus
     "trei",  # three
     "patru",  # four
     "tsintsi",  # five
     "shase", "shasi",  # six
     "shapte", "shapti",  # seven
     "optu",  # eight
-    "noauÃ£", "nauÃ£",  # nine - "noauÃ£" is in corpus
+    "noaua", "noauÃ£", "nauÃ£",  # nine - "noaua" is in corpus
     "dzatsi", "dzatse",  # ten
     
     # Teens
