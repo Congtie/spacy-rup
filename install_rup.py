@@ -68,7 +68,9 @@ def install_rup_module():
         import spacy
         importlib.reload(spacy)
         
-        from spacy.lang.rup import Aromanian
+        # NOTĂ: Linia de mai jos va arăta eroare în editor ÎNAINTE de instalare.
+        # E normal - modulul nu există încă. Eroarea dispare după instalare.
+        from spacy.lang.rup import Aromanian  # type: ignore
         nlp = Aromanian()
         
         doc = nlp("Bunã dzua! Mini hiu armãn.")

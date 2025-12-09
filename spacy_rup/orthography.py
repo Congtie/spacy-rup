@@ -290,13 +290,14 @@ def detect_orthography(text: str) -> str:
     Returns:
         'cunia', 'diaro', 'mixed', or 'unknown'
     """
-    # DIARO-specific characters: ș, ț, ă, â, î, ľ, ń, d̦
-    diaro_chars = set("șțăâîľńd̦ȘȚĂÂÎĽŃ")
+    # DIARO-specific characters: ș, ț, ă, â, î, ľ, ń
+    # Note: d̦ is a combining character (d + comma below), checked separately
+    diaro_chars = set("șțăâîľńȘȚĂÂÎĽŃ")
     # Cunia-specific patterns: sh, ts, lj, nj, dz, ã
     cunia_patterns = ["sh", "ts", "lj", "nj", "dz"]
-    cunia_chars = set("ã")
+    cunia_chars = set("ãÃ")
     
-    has_diaro = any(c in diaro_chars for c in text)
+    has_diaro = any(c in diaro_chars for c in text) or "d̦" in text or "D̦" in text
     has_cunia_char = any(c in cunia_chars for c in text)
     has_cunia_pattern = any(p in text.lower() for p in cunia_patterns)
     has_cunia = has_cunia_char or has_cunia_pattern
