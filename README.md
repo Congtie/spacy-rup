@@ -25,18 +25,18 @@ A complete spaCy language module for **Aromanian** (Macedo-Romanian), an endange
 
 ## Installation
 
-`ash
+```bash
 # Clone the repository
 git clone https://github.com/Congtie/spacy-rup.git
 cd spacy-rup
 
 # Install in development mode
 pip install -e .
-`
+```
 
 ## Quick Start
 
-`python
+```python
 import spacy
 
 # Create a blank Aromanian pipeline
@@ -49,10 +49,10 @@ nlp.add_pipe('aromanian_lemmatizer')
 doc = nlp("Ficiorlu featse un lucru multu bun.")
 for token in doc:
     print(f"{token.text:15} -> {token.lemma_}")
-`
+```
 
 Output:
-`
+```
 Ficiorlu        -> ficior
 featse          -> fac
 un              -> un
@@ -60,7 +60,7 @@ lucru           -> lucru
 multu           -> multu
 bun             -> bun
 .               -> .
-`
+```
 
 ## Lemmatizer
 
@@ -93,7 +93,7 @@ Removes definite articles:
 
 ### Example
 
-`python
+```python
 import spacy
 
 nlp = spacy.blank('rup')
@@ -104,7 +104,7 @@ doc = nlp("Eara una oara un om shi avea trei ficiori")
 changes = [(t.text, t.lemma_) for t in doc if t.text.lower() != t.lemma_]
 print(changes)
 # [('Eara', 'hiu'), ('avea', 'am')]
-`
+```
 
 ## Orthographic Standards
 
@@ -112,38 +112,38 @@ Aromanian has multiple writing systems. This module supports both:
 
 | Standard | Central Vowel | Special Consonants | Example |
 |----------|--------------|-------------------|---------|
-| **DIARO** | a, a, i | d, l, n, s, t (with diacritics) | Buna dzua! |
-| **Cunia** | a (breve) | dz, lj, nj, sh, ts | Buna dzua! |
+| **DIARO** | ă, â, î | d̦, ľ, ń, ș, ț | Bună dzua! |
+| **Cunia** | ã | dz, lj, nj, sh, ts | Bunã dzua! |
 
 ### Conversion
 
-`python
+```python
 from spacy_rup.orthography import to_cunia, to_diaro, detect_orthography
 
 # Detect standard
 detect_orthography("Shi una vulpe")  # "cunia"
 
 # Convert between standards
-text_diaro = "Si una vulpe"
+text_diaro = "Și una vulpe"
 text_cunia = to_cunia(text_diaro)  # "Shi una vulpe"
-`
+```
 
 ## Project Structure
 
-`
+```
 spacy-rup/
- spacy_rup/
-    __init__.py          # Language class (Aromanian)
-    stop_words.py        # 163+ stop words
-    tokenizer_exceptions.py  # Clitic contractions
-    punctuation.py       # Prefix/suffix rules
-    lex_attrs.py         # Number words
-    orthography.py       # Cunia <-> DIARO conversion
-    lemmatizer.py        # Lookup tables and rules
-    lemma_component.py   # spaCy pipeline component
- setup.py
- README.md
-`
+├── spacy_rup/
+│   ├── __init__.py          # Language class (Aromanian)
+│   ├── stop_words.py        # 163+ stop words
+│   ├── tokenizer_exceptions.py  # Clitic contractions
+│   ├── punctuation.py       # Prefix/suffix rules
+│   ├── lex_attrs.py         # Number words
+│   ├── orthography.py       # Cunia <-> DIARO conversion
+│   ├── lemmatizer.py        # Lookup tables and rules
+│   └── lemma_component.py   # spaCy pipeline component
+├── setup.py
+└── README.md
+```
 
 ## Data Sources
 
