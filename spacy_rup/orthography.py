@@ -91,15 +91,15 @@ DIARO_TO_CUNIA_CONSONANTS = {
 # Central vowel normalization to Cunia (ã)
 VOWELS_TO_CUNIA = {
     "ă": "ã",
-    "Ă": "Ã",
+    "Ă": "ã",
     "â": "ã",
-    "Â": "Ã",
+    "Â": "ã",
     "î": "ã",
-    "Î": "Ã",
+    "Î": "ã",
     "ӑ": "ã",  # Cyrillic-looking variant
-    "Ӑ": "Ã",
+    "Ӑ": "ã",
     "ǎ": "ã",
-    "Ǎ": "Ã",
+    "Ǎ": "ã",
 }
 
 # Other character normalizations
@@ -389,11 +389,11 @@ BOOK_TO_DIARO = [
 
 # Book to Cunia mapping
 BOOK_TO_CUNIA = [
-    ("Ă", "Ã"),
-    ("Î", "Ã"),
+    ("Ă", "ã"),
+    ("Î", "ã"),
     ("î", "ã"),
     ("ă", "ã"),
-    ("Â", "Ã"),
+    ("Â", "ã"),
     ("â", "ã"),
     ("l'", "lj"),
     ("l'", "lj"),

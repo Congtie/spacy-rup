@@ -9,59 +9,59 @@ from spacy.attrs import LIKE_NUM
 
 _num_words = {
     # Cardinal numbers (Cunia orthography) - verified from corpus
-    "un", "una", "unu", "unÃ£",  # one (masc/fem)
-    "doi", "doaua", "doauÃ£", "dauÃ£",  # two (masc/fem) - "doaua" is common in corpus
+    "un", "una", "unu", "unã",  # one (masc/fem)
+    "doi", "doaua", "doauã", "dauã",  # two (masc/fem) - "doaua" is common in corpus
     "trei",  # three
     "patru",  # four
     "tsintsi",  # five
     "shase", "shasi",  # six
     "shapte", "shapti",  # seven
     "optu",  # eight
-    "noaua", "noauÃ£", "nauÃ£",  # nine - "noaua" is in corpus
+    "noaua", "noauã", "nauã",  # nine - "noaua" is in corpus
     "dzatsi", "dzatse",  # ten
     
     # Teens
-    "unsprÃ£dzatsi", "unsprÃ£dzatse",
-    "doisprÃ£dzatsi", "doisprÃ£dzatse",
-    "treissprÃ£dzatsi", "treissprÃ£dzatse",
-    "paisprÃ£dzatsi", "paisprÃ£dzatse",
-    "tsintsisprÃ£dzatsi", "tsintsisprÃ£dzatse",
-    "shasisprÃ£dzatsi", "shasisprÃ£dzatse",
-    "shaptisprÃ£dzatsi", "shaptisprÃ£dzatse",
-    "optusprÃ£dzatsi", "optusprÃ£dzatse",
-    "nauÃ£sprÃ£dzatsi", "noauÃ£sprÃ£dzatse",
+    "unsprãdzatsi", "unsprãdzatse",
+    "doisprãdzatsi", "doisprãdzatse",
+    "treissprãdzatsi", "treissprãdzatse",
+    "paisprãdzatsi", "paisprãdzatse",
+    "tsintsisprãdzatsi", "tsintsisprãdzatse",
+    "shasisprãdzatsi", "shasisprãdzatse",
+    "shaptisprãdzatsi", "shaptisprãdzatse",
+    "optusprãdzatsi", "optusprãdzatse",
+    "nauãsprãdzatsi", "noauãsprãdzatse",
     
     # Tens (Greek-influenced for 20)
     "yinghits", "yinghitsi",  # twenty (from Greek ÎµÎ¯ÎºÎ¿ÏƒÎ¹)
-    "treidzÃ£ts", "treidzÃ£tsi",  # thirty
-    "patrudzÃ£ts", "patrudzÃ£tsi",  # forty
-    "tsindzÃ£ts", "tsindzÃ£tsi",  # fifty
-    "shaidzÃ£ts", "shaidzÃ£tsi",  # sixty
-    "shaptidzÃ£ts", "shaptidzÃ£tsi",  # seventy
-    "optudzÃ£ts", "optudzÃ£tsi",  # eighty
-    "nauÃ£dzÃ£ts", "noauÃ£dzÃ£tsi",  # ninety
+    "treidzãts", "treidzãtsi",  # thirty
+    "patrudzãts", "patrudzãtsi",  # forty
+    "tsindzãts", "tsindzãtsi",  # fifty
+    "shaidzãts", "shaidzãtsi",  # sixty
+    "shaptidzãts", "shaptidzãtsi",  # seventy
+    "optudzãts", "optudzãtsi",  # eighty
+    "nauãdzãts", "noauãdzãtsi",  # ninety
     
     # Larger numbers
-    "sutÃ£", "suta", "sute",  # hundred - "suta" found in corpus
+    "sutã", "suta", "sute",  # hundred - "suta" found in corpus
     "njilji", "njilju",  # thousand - found in corpus
     
     # DIARO orthography variants
-    "dauÄƒ", "È›intsi", "È™ase", "È™apte", "nÄƒuÄƒ", "dzÄƒÈ›", "dzÄƒÈ›e",
-    "sutÄƒ", "Å„ilji", "Å„ilju",
+    "dauă", "țintsi", "șase", "șapte", "năuă", "dzăț", "dzățe",
+    "sută", "ńilji", "ńilju",
     
     # Ordinal numbers
-    "protlu", "protÃ£", "prota",  # first
-    "doilea", "dauÃ£lea", "doauÃ£lea",  # second
+    "protlu", "protã", "prota",  # first
+    "doilea", "dauãlea", "doauãlea",  # second
     "treilea", "treia",  # third
     "patrulea", "patra",  # fourth
-    "ultimu", "ultimÃ£",  # last
+    "ultimu", "ultimã",  # last
 }
 
 # Fractions and special numbers
 _num_words.update({
-    "njiliunÃ£", "miliunÃ£",  # million (Cunia/DIARO)
-    "giumÃ£tati", "giumÄƒtate",  # half
-    "sfÃ£rtu", "sfÄƒrtu",  # quarter
+    "njiliunã", "miliunã",  # million (Cunia/DIARO)
+    "giumãtati", "giumătate",  # half
+    "sfãrtu", "sfărtu",  # quarter
     "zero", "zeru",
 })
 
@@ -85,7 +85,7 @@ def like_num(text):
     if text in _num_words:
         return True
     
-    # Check for compound numbers like "dauÃ£-dzatsi" (twenty-two)
+    # Check for compound numbers like "dauã-dzatsi" (twenty-two)
     if "-" in text:
         parts = text.split("-")
         if all(p in _num_words for p in parts):

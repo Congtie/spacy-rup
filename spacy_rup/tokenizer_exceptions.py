@@ -43,7 +43,7 @@ _aromanian_abbrevs = [
     "d-lu",    # domnul (Mr.)
     "d-na",    # doamna (Mrs.)
     "d-ta",    # dumneata (you formal)
-    "d-voastÃ£",  # dumneavoastrÄƒ
+    "d-voastã",  # dumneavoastră
     "dvs.",
     # Common abbreviations
     "etc.",
@@ -65,8 +65,8 @@ _aromanian_abbrevs = [
     "dr.",
     "ing.",
     # Aromanian-specific
-    "arm.",  # armÃ£neashti
-    "rom.",  # romÃ£neashti
+    "arm.",  # armãneashti
+    "rom.",  # romãneashti
     "gr.",   # greceashti
 ]
 
@@ -79,7 +79,7 @@ for orth in _aromanian_abbrevs:
 # They should be handled by the Matcher or EntityRuler instead
 # Example MWEs for future reference:
 #   "tu soni" (finally), "di arada" (usually), "ma multu" (more)
-#   "ma putsÃ£n" (less), "cÃ£t ma" (as...as), "shi cÃ£" (and that)
+#   "ma putsãn" (less), "cãt ma" (as...as), "shi cã" (and that)
 
 # Contractions and clitics - based on corpus analysis (senisioi/aromanian)
 # Most frequent patterns from corpus.rup_cun analysis:
@@ -90,22 +90,22 @@ _contractions = [
     ("s-lu", [{ORTH: "s-"}, {ORTH: "lu"}]),
     ("s-lji", [{ORTH: "s-"}, {ORTH: "lji"}]),
     ("s-u", [{ORTH: "s-"}, {ORTH: "u"}]),
-    ("s-hibÃ£", [{ORTH: "s-"}, {ORTH: "hibÃ£"}]),
-    ("s-facÃ£", [{ORTH: "s-"}, {ORTH: "facÃ£"}]),
+    ("s-hibã", [{ORTH: "s-"}, {ORTH: "hibã"}]),
+    ("s-facã", [{ORTH: "s-"}, {ORTH: "facã"}]),
     ("S-mi", [{ORTH: "S-"}, {ORTH: "mi"}]),
     ("s-mi", [{ORTH: "s-"}, {ORTH: "mi"}]),
     ("s-nji", [{ORTH: "s-"}, {ORTH: "nji"}]),
-    ("s-yinÃ£", [{ORTH: "s-"}, {ORTH: "yinÃ£"}]),
+    ("s-yinã", [{ORTH: "s-"}, {ORTH: "yinã"}]),
     ("S-featse", [{ORTH: "S-"}, {ORTH: "featse"}]),
-    ("s-tsÃ£", [{ORTH: "s-"}, {ORTH: "tsÃ£"}]),
+    ("s-tsã", [{ORTH: "s-"}, {ORTH: "tsã"}]),
     ("s-ti", [{ORTH: "s-"}, {ORTH: "ti"}]),
-    ("s-ducÃ£", [{ORTH: "s-"}, {ORTH: "ducÃ£"}]),
-    ("s-lÃ£", [{ORTH: "s-"}, {ORTH: "lÃ£"}]),
-    ("s-veadÃ£", [{ORTH: "s-"}, {ORTH: "veadÃ£"}]),
-    ("s-turnÃ£", [{ORTH: "s-"}, {ORTH: "turnÃ£"}]),
-    ("s-vÃ£", [{ORTH: "s-"}, {ORTH: "vÃ£"}]),
+    ("s-ducã", [{ORTH: "s-"}, {ORTH: "ducã"}]),
+    ("s-lã", [{ORTH: "s-"}, {ORTH: "lã"}]),
+    ("s-veadã", [{ORTH: "s-"}, {ORTH: "veadã"}]),
+    ("s-turnã", [{ORTH: "s-"}, {ORTH: "turnã"}]),
+    ("s-vã", [{ORTH: "s-"}, {ORTH: "vã"}]),
     ("s-ljea", [{ORTH: "s-"}, {ORTH: "ljea"}]),
-    ("s-mÃ£cÃ£", [{ORTH: "s-"}, {ORTH: "mÃ£cÃ£"}]),
+    ("s-mãcã", [{ORTH: "s-"}, {ORTH: "mãcã"}]),
     ("s-li", [{ORTH: "s-"}, {ORTH: "li"}]),
     
     # shi- prefix + clitics
@@ -143,13 +143,13 @@ _contractions = [
     ("tse-lji", [{ORTH: "tse"}, {ORTH: "-"}, {ORTH: "lji"}]),
     
     # Possessive forms
-    ("mÃ£-sa", [{ORTH: "mÃ£-sa"}]),  # his/her mother
-    ("tatÃ£-su", [{ORTH: "tatÃ£-su"}]),  # his father
+    ("mã-sa", [{ORTH: "mã-sa"}]),  # his/her mother
+    ("tatã-su", [{ORTH: "tatã-su"}]),  # his father
     ("frate-su", [{ORTH: "frate-su"}]),  # his brother
     ("sor-sa", [{ORTH: "sor-sa"}]),  # his/her sister
     
-    # de-amirÃ£ compound
-    ("de-amirÃ£", [{ORTH: "de"}, {ORTH: "-"}, {ORTH: "amirÃ£"}]),
+    # de-amirã compound
+    ("de-amirã", [{ORTH: "de"}, {ORTH: "-"}, {ORTH: "amirã"}]),
     ("de-a", [{ORTH: "de"}, {ORTH: "-"}, {ORTH: "a"}]),
     
     # D-iu (de + iu = where from)
@@ -202,7 +202,7 @@ _particles = [
     "escu",
     "vahi",
     # Discourse markers
-    "mÃ£rÃ£",
+    "mãrã",
     "ehei",
     "bre",
     "apoia",  # then
@@ -215,7 +215,7 @@ for particle in _particles:
 _apostrophe_words = [
     "l'i",
     "l'imba",
-    "l'imbÃ£",
+    "l'imbã",
     "l'ipidu",
     "n'",
     "n'i",

@@ -25,16 +25,16 @@ _list_icons = [x.replace("\\u00B0", "") for x in _list_icons]
 # Handles both DIARO and Cunia standards
 _rup_variants = {
     # Central vowels - DIARO vs Cunia
-    "Ä‚": ["Ä‚", "Ãƒ", "A"],
-    "Ã‚": ["Ã‚", "Ãƒ", "A"],
-    "ÃŽ": ["ÃŽ", "Ãƒ", "I"],
+    "Ă": ["Ă", "ã", "A"],
+    "Â": ["Â", "ã", "A"],
+    "Î": ["Î", "ã", "I"],
     # Consonants with cedilla/special chars
-    "È˜": ["È˜", "Åž", "S"],  # DIARO
-    "Èš": ["Èš", "Å¢", "T"],  # DIARO
+    "Ș": ["Ș", "Ş", "S"],  # DIARO
+    "Ț": ["Ț", "Ţ", "T"],  # DIARO
     # Cunia digraphs are handled separately
-    "Ä½": ["Ä½", "L"],  # DIARO palatal l
-    "Åƒ": ["Åƒ", "Ã‘", "N"],  # DIARO palatal n
-    "DÌ¦": ["DÌ¦", "D"],  # DIARO dz
+    "Ľ": ["Ľ", "L"],  # DIARO palatal l
+    "Ń": ["Ń", "Ñ", "N"],  # DIARO palatal n
+    "D̦": ["D̦", "D"],  # DIARO dz
 }
 
 
@@ -42,8 +42,8 @@ def _make_rup_variants(tokens):
     """Generate orthographic variants for Aromanian tokens.
     
     Aromanian has multiple writing standards:
-    - DIARO (Caragiu-MarioÈ›eanu): ÄƒÃ¢Ã®/dÌ¦/Ä¾/Å„/È™/È›
-    - Cunia (Tiberiu Cunia): Ã£/dz/lj/nj/sh/ts
+    - DIARO (Caragiu-Marioțeanu): ăâî/d̦/ľ/ń/ș/ț
+    - Cunia (Tiberiu Cunia): ã/dz/lj/nj/sh/ts
     
     This function generates variants to handle both.
     """
@@ -63,19 +63,19 @@ def _make_rup_variants(tokens):
             elif i + 1 < len(token):
                 digraph = token[i:i+2].lower()
                 if digraph == "sh":
-                    char_variants.append([token[i:i+2], "È™", "ÅŸ"])
+                    char_variants.append([token[i:i+2], "ș", "ş"])
                     i += 1
                 elif digraph == "ts":
-                    char_variants.append([token[i:i+2], "È›", "Å£"])
+                    char_variants.append([token[i:i+2], "ț", "ţ"])
                     i += 1
                 elif digraph == "lj":
-                    char_variants.append([token[i:i+2], "Ä¾", "l'"])
+                    char_variants.append([token[i:i+2], "ľ", "l'"])
                     i += 1
                 elif digraph == "nj":
-                    char_variants.append([token[i:i+2], "Å„", "Ã±", "n'"])
+                    char_variants.append([token[i:i+2], "ń", "ñ", "n'"])
                     i += 1
                 elif digraph == "dz":
-                    char_variants.append([token[i:i+2], "dÌ¦"])
+                    char_variants.append([token[i:i+2], "d̦"])
                     i += 1
                 else:
                     char_variants.append([token[i]])
@@ -110,11 +110,11 @@ _rup_prefixes = [
     "m-",
     "mi-",
     "n-",
-    "nÃ£-",
+    "nã-",
     "ni-",
     "o-",
     "p-",
-    "pÃ£-",
+    "pã-",
     "pi-",
     "pitu-",
     "prit-",
@@ -131,10 +131,10 @@ _rup_prefixes = [
     # Greek-influenced particles
     "sh-",
     "shi-",
-    "È™-",
-    "È™i-",
+    "ș-",
+    "și-",
     "ts-",
-    "È›-",
+    "ț-",
 ]
 _rup_prefix_variants = _make_rup_variants(_rup_prefixes)
 
@@ -152,20 +152,20 @@ _rup_suffixes = [
     "-li",
     # Demonstrative clitics
     "-aestu",
-    "-aestÃ£",
+    "-aestã",
     "-aesta",
     "-atsea",
     "-atsel",
     "-atselu",
     # Personal pronoun clitics
     "-mi",
-    "-mÃ£",
+    "-mã",
     "-ti",
     "-lu",
     "-u",
     "-o",
-    "-nÃ£",
-    "-vÃ£",
+    "-nã",
+    "-vã",
     "-lji",
     "-li",
     "-lor",
@@ -192,16 +192,16 @@ _rup_suffixes = [
     "-lj",
     "-nj",
     # DIARO variants
-    "-È™",
-    "-È›",
-    "-Ä¾",
-    "-Å„",
+    "-ș",
+    "-ț",
+    "-ľ",
+    "-ń",
 ]
 _rup_suffix_variants = _make_rup_variants(_rup_suffixes)
 
 
 _prefixes = (
-    ["Â§", "%", "=", "â€”", "â€“", r"\+(?![0-9])"]
+    ["§", "%", "=", "—", "–", r"\+(?![0-9])"]
     + _rup_prefix_variants
     + LIST_PUNCT
     + LIST_ELLIPSES
@@ -220,12 +220,12 @@ _suffixes = (
     + ["'s", "'S", "'s", "'S"]
     + [
         r"(?<=[0-9])\+",
-        r"(?<=Â°[FfCcKk])\.",
+        r"(?<=°[FfCcKk])\.",
         r"(?<=[0-9])(?:{c})".format(c=CURRENCY),
         r"(?<=[0-9])(?:{u})".format(u="|".join(LIST_CURRENCY)),
         r"(?<=[0-9{al}{e}{q}])\.".format(
             al=ALPHA_LOWER,
-            e=r"%Â²Â³",
+            e=r"%²³",
             q=CONCAT_QUOTES,
         ),
     ]
