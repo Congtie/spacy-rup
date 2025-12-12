@@ -38,8 +38,6 @@ import json
 from pathlib import Path
 
 
-# Mapping tables for orthographic conversion
-# Cunia to DIARO consonant mapping
 CUNIA_TO_DIARO_CONSONANTS = {
     "sh": "ș",
     "Sh": "Ș",
@@ -58,7 +56,6 @@ CUNIA_TO_DIARO_CONSONANTS = {
     "DZ": "D̦",
 }
 
-# DIARO to Cunia consonant mapping (reverse)
 DIARO_TO_CUNIA_CONSONANTS = {
     "ș": "sh",
     "Ș": "Sh",
@@ -72,7 +69,7 @@ DIARO_TO_CUNIA_CONSONANTS = {
     "Ľ": "Lj",
     "l'": "lj",
     "L'": "Lj",
-    "l'": "lj",  # different apostrophe
+    "l'": "lj",
     "L'": "Lj",
     "ń": "nj",
     "Ń": "Nj",
@@ -88,7 +85,6 @@ DIARO_TO_CUNIA_CONSONANTS = {
     "Ḍ": "Dz",
 }
 
-# Central vowel normalization to Cunia (ã)
 VOWELS_TO_CUNIA = {
     "ă": "ã",
     "Ă": "ã",
@@ -96,13 +92,12 @@ VOWELS_TO_CUNIA = {
     "Â": "ã",
     "î": "ã",
     "Î": "ã",
-    "ӑ": "ã",  # Cyrillic-looking variant
+    "ӑ": "ã",
     "Ӑ": "ã",
     "ǎ": "ã",
     "Ǎ": "ã",
 }
 
-# Other character normalizations
 OTHER_CHARS = {
     "ŭ": "u",
     "ς": "c",
@@ -195,23 +190,19 @@ def resolve_central_vowel_to_diaro(word: str, position: int, fah: Optional[dict]
     if position == 0:
         return "î"
     
-    # Use n-gram data if available
     if fah and fuh:
-        # Get 4-character context around the position
         start = max(0, position - 2)
         end = min(len(word), position + 3)
         context = word[start:end].lower()
         
-        cnt_ah = fah.get(context, 0)  # Count favoring â
-        cnt_uh = fuh.get(context, 0)  # Count favoring ă
+        cnt_ah = fah.get(context, 0)
+        cnt_uh = fuh.get(context, 0)
         
         if cnt_ah > cnt_uh:
             return "â"
         else:
             return "ă"
     
-    # Default heuristic: use â in the middle, ă otherwise
-    # This is a simplification; real conversion needs dictionary lookup
     return "ă"
 
 
@@ -226,10 +217,8 @@ def to_diaro(text: str, fah: Optional[dict] = None, fuh: Optional[dict] = None) 
     Returns:
         Text converted to DIARO standard
     """
-    # First ensure we're in Cunia as intermediate
     text = to_cunia(text)
     
-    # Process word by word for vowel resolution
     words = []
     current_word = ""
     
@@ -245,7 +234,6 @@ def to_diaro(text: str, fah: Optional[dict] = None, fuh: Optional[dict] = None) 
     if current_word:
         words.append(("word", current_word))
     
-    # Convert each word
     result = []
     for token_type, token in words:
         if token_type == "word":
@@ -258,7 +246,6 @@ def to_diaro(text: str, fah: Optional[dict] = None, fuh: Optional[dict] = None) 
                     converted += new_char
                 else:
                     converted += char
-            # Convert consonants to DIARO
             converted = convert_consonants_to_diaro(converted)
             result.append(converted)
         else:
@@ -290,10 +277,7 @@ def detect_orthography(text: str) -> str:
     Returns:
         'cunia', 'diaro', 'mixed', or 'unknown'
     """
-    # DIARO-specific characters: ș, ț, ă, â, î, ľ, ń
-    # Note: d̦ is a combining character (d + comma below), checked separately
     diaro_chars = set("șțăâîľńȘȚĂÂÎĽŃ")
-    # Cunia-specific patterns: sh, ts, lj, nj, dz, ã
     cunia_patterns = ["sh", "ts", "lj", "nj", "dz"]
     cunia_chars = set("ãÃ")
     
@@ -340,23 +324,18 @@ def clean_text(text: str, lang: str = "rup") -> str:
     Returns:
         Cleaned text
     """
-    # Consecutive spaces
     text = re.sub(r"\s+", " ", text).strip()
     
-    # Old Romanian î in the middle of the word (for mixed texts)
     text = re.sub(r"(?<=\w)î(?=\w)", "â", text)
     
     if lang == "ron":
-        # Romanian: normalize cedilla variants
         text = text.replace("Ş", "Ș")
         text = text.replace("ş", "ș")
         text = text.replace("Ţ", "Ț")
         text = text.replace("ţ", "ț")
     else:
-        # Aromanian: convert to Cunia as default
         text = to_cunia(text)
     
-    # Common punctuation normalization
     text = text.replace("—", "-")
     text = text.replace("…", "...")
     text = text.replace("*", "")
@@ -371,7 +350,6 @@ def clean_text(text: str, lang: str = "rup") -> str:
     return text
 
 
-# Book to DIARO mapping (from senisioi/aromanian)
 BOOK_TO_DIARO = [
     ("dz", "d̦"),
     ("Dz", "D̦"),
@@ -388,7 +366,6 @@ BOOK_TO_DIARO = [
     ("Γ", "Y"),
 ]
 
-# Book to Cunia mapping
 BOOK_TO_CUNIA = [
     ("Ă", "ã"),
     ("Î", "ã"),
@@ -443,11 +420,10 @@ def book_to_cunia(text: str) -> str:
 
 
 if __name__ == "__main__":
-    # Test the conversions
     test_texts = [
-        "Bunã dzua! Cum eshti?",  # Cunia
-        "Bună dzua! Cum ești?",    # DIARO (partial)
-        "Mini hiu armãn shi zburãscu armãneashti.",  # Cunia
+        "Bunã dzua! Cum eshti?",
+        "Bună dzua! Cum ești?",
+        "Mini hiu armãn shi zburãscu armãneashti.",
     ]
     
     print("Testing orthography conversions:")

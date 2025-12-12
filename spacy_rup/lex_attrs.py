@@ -1,26 +1,20 @@
-﻿# Lexical attributes for Aromanian
-# Based on Romanian lex_attrs with Aromanian-specific patterns
+﻿
 
 from spacy.attrs import LIKE_NUM
 
-# Aromanian number words
-# Based on corpus analysis (senisioi/aromanian Tales dataset)
-# Note: Aromanian uses both Latin-derived and some Greek-influenced numerals
 
 _num_words = {
-    # Cardinal numbers (Cunia orthography) - verified from corpus
-    "un", "una", "unu", "unã",  # one (masc/fem)
-    "doi", "doaua", "doauã", "dauã",  # two (masc/fem) - "doaua" is common in corpus
-    "trei",  # three
-    "patru",  # four
-    "tsintsi",  # five
-    "shase", "shasi",  # six
-    "shapte", "shapti",  # seven
-    "optu",  # eight
-    "noaua", "noauã", "nauã",  # nine - "noaua" is in corpus
-    "dzatsi", "dzatse",  # ten
+    "un", "una", "unu", "unã",
+    "doi", "doaua", "doauã", "dauã",
+    "trei",
+    "patru",
+    "tsintsi",
+    "shase", "shasi",
+    "shapte", "shapti",
+    "optu",
+    "noaua", "noauã", "nauã",
+    "dzatsi", "dzatse",
     
-    # Teens
     "unsprãdzatsi", "unsprãdzatse",
     "doisprãdzatsi", "doisprãdzatse",
     "treissprãdzatsi", "treissprãdzatse",
@@ -31,61 +25,51 @@ _num_words = {
     "optusprãdzatsi", "optusprãdzatse",
     "nauãsprãdzatsi", "noauãsprãdzatse",
     
-    # Tens (Greek-influenced for 20)
-    "yinghits", "yinghitsi",  # twenty (from Greek ÎµÎ¯ÎºÎ¿ÏƒÎ¹)
-    "treidzãts", "treidzãtsi",  # thirty
-    "patrudzãts", "patrudzãtsi",  # forty
-    "tsindzãts", "tsindzãtsi",  # fifty
-    "shaidzãts", "shaidzãtsi",  # sixty
-    "shaptidzãts", "shaptidzãtsi",  # seventy
-    "optudzãts", "optudzãtsi",  # eighty
-    "nauãdzãts", "noauãdzãtsi",  # ninety
+    "yinghits", "yinghitsi",
+    "treidzãts", "treidzãtsi",
+    "patrudzãts", "patrudzãtsi",
+    "tsindzãts", "tsindzãtsi",
+    "shaidzãts", "shaidzãtsi",
+    "shaptidzãts", "shaptidzãtsi",
+    "optudzãts", "optudzãtsi",
+    "nauãdzãts", "noauãdzãtsi",
     
-    # Larger numbers
-    "sutã", "suta", "sute",  # hundred - "suta" found in corpus
-    "njilji", "njilju",  # thousand - found in corpus
+    "sutã", "suta", "sute",
+    "njilji", "njilju",
     
-    # DIARO orthography variants
     "dauă", "țintsi", "șase", "șapte", "năuă", "dzăț", "dzățe",
     "sută", "ńilji", "ńilju",
     
-    # Ordinal numbers
-    "protlu", "protã", "prota",  # first
-    "doilea", "dauãlea", "doauãlea",  # second
-    "treilea", "treia",  # third
-    "patrulea", "patra",  # fourth
-    "ultimu", "ultimã",  # last
+    "protlu", "protã", "prota",
+    "doilea", "dauãlea", "doauãlea",
+    "treilea", "treia",
+    "patrulea", "patra",
+    "ultimu", "ultimã",
 }
 
-# Fractions and special numbers
 _num_words.update({
-    "njiliunã", "miliunã",  # million (Cunia/DIARO)
-    "giumãtati", "giumătate",  # half
-    "sfãrtu", "sfărtu",  # quarter
+    "njiliunã", "miliunã",
+    "giumãtati", "giumătate",
+    "sfãrtu", "sfărtu",
     "zero", "zeru",
 })
 
 
 def like_num(text):
     """Check if text represents a number in Aromanian."""
-    # Clean and normalize
     text = text.lower().replace(",", "").replace(".", "")
     
-    # Check if it's a digit
     if text.isdigit():
         return True
     
-    # Check if it looks like a number with decimal
     if text.count(",") == 1 or text.count(".") == 1:
         parts = text.replace(",", ".").split(".")
         if all(p.isdigit() for p in parts if p):
             return True
     
-    # Check word numbers
     if text in _num_words:
         return True
     
-    # Check for compound numbers like "dauã-dzatsi" (twenty-two)
     if "-" in text:
         parts = text.split("-")
         if all(p in _num_words for p in parts):

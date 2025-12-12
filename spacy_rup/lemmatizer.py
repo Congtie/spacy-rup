@@ -1,16 +1,8 @@
-# Lemmatizer for Aromanian
-# Rule-based approach with lookup tables and suffix rules
-# Based on forms extracted from the Aromanian corpus (Cunia orthography)
 
 from typing import Optional
 
-# ============================================================================
-# LOOKUP TABLES - Forms extracted from corpus
-# ============================================================================
 
-# Verb forms -> infinitive (lemma)
 VERB_LEMMAS = {
-    # a hi (to be) - ~350 occurrences in corpus
     "hiu": "hiu",
     "eshti": "hiu",
     "easti": "hiu",
@@ -23,7 +15,6 @@ VERB_LEMMAS = {
     "furã": "hiu",
     "fura": "hiu",
     
-    # a avea (to have) - ~500+ occurrences
     "am": "am",
     "ai": "am",
     "are": "am",
@@ -40,7 +31,6 @@ VERB_LEMMAS = {
     "aveaglje": "am",
     "avearea": "am",
     
-    # a vrea (to want) - ~550+ occurrences
     "voi": "vrea",
     "vrea": "vrea",
     "vrei": "vrea",
@@ -59,7 +49,6 @@ VERB_LEMMAS = {
     "vreava": "vrea",
     "vreavã": "vrea",
     
-    # a dzãtse (to say) - ~200+ occurrences
     "dzãc": "dzãc",
     "dzãcã": "dzãc",
     "dzãts": "dzãc",
@@ -76,7 +65,6 @@ VERB_LEMMAS = {
     "dzatsile": "dzãc",
     "dzãca": "dzãc",
     
-    # a fac (to do/make) - ~400+ occurrences
     "fac": "fac",
     "facã": "fac",
     "fats": "fac",
@@ -94,7 +82,6 @@ VERB_LEMMAS = {
     "disfats": "fac",
     "disfeatse": "fac",
     
-    # a da (to give) - ~190+ occurrences
     "dau": "dau",
     "dai": "dau",
     "da": "dau",
@@ -106,9 +93,8 @@ VERB_LEMMAS = {
     "deadeshi": "dau",
     "deadishi": "dau",
     "deadirã": "dau",
-    "deadun": "dau",  # împreună
+    "deadun": "dau",
     
-    # a shtiu (to know) - ~180+ occurrences
     "shtiu": "shtiu",
     "shtii": "shtiu",
     "shtie": "shtiu",
@@ -124,7 +110,6 @@ VERB_LEMMAS = {
     "shtiri": "shtiu",
     "shtiindalui": "shtiu",
     
-    # a potu (can) - ~200+ occurrences
     "pot": "potu",
     "pots": "potu",
     "poate": "potu",
@@ -139,11 +124,10 @@ VERB_LEMMAS = {
     "puturã": "potu",
     "putut": "potu",
     "puteare": "potu",
-    "putsãn": "potu",  # puțin
+    "putsãn": "potu",
     "putsãnã": "potu",
     "putsãnji": "potu",
     
-    # a yini (to come) - ~300+ occurrences
     "yin": "yinu",
     "yinã": "yinu",
     "yinu": "yinu",
@@ -153,7 +137,6 @@ VERB_LEMMAS = {
     "yinjea": "yinu",
     "yinlu": "yinu",
     "yinyits": "yinu",
-    # cu v- initial (variante)
     "vinje": "yinu",
     "vine": "yinu",
     "vinea": "yinu",
@@ -162,7 +145,6 @@ VERB_LEMMAS = {
     "vinjirã": "yinu",
     "vindu": "yinu",
     
-    # a vedu (to see) - ~290+ occurrences
     "vedu": "vedu",
     "vedz": "vedu",
     "vedzi": "vedu",
@@ -181,7 +163,6 @@ VERB_LEMMAS = {
     "veduiã": "vedu",
     "vidzãndalui": "vedu",
     
-    # a ljau (to take) - ~100+ occurrences (excluding "lji" pronoun)
     "ljau": "ljau",
     "ljei": "ljau",
     "lja": "ljau",
@@ -193,7 +174,6 @@ VERB_LEMMAS = {
     "lo": "ljau",
     "loarã": "ljau",
     
-    # a ducu (to go/carry) - ~130+ occurrences
     "duc": "ducu",
     "duca": "ducu",
     "ducã": "ducu",
@@ -211,70 +191,64 @@ VERB_LEMMAS = {
     "duchirã": "ducu",
 }
 
-# Noun forms -> lemma (without article)
-# Based on corpus frequency analysis
 NOUN_LEMMAS = {
-    # Masculine nouns with definite article -lu
-    "ficiorlu": "ficior",     # boy (140)
-    "ficiorlji": "ficior",    # boys (27)
-    "caplu": "cap",           # head (85)
-    "amirãlu": "amirã",       # emperor (69)
-    "loclu": "loc",           # place (50)
-    "hiljilu": "hilji",       # son (39)
-    "aushlu": "aush",         # old man (32)
-    "picurarlu": "picurar",   # shepherd (32)
-    "araplu": "arap",         # black man (25)
-    "njiclu": "njic",         # small one (24)
-    "zborlu": "zbor",         # word (22)
-    "vizirlu": "vizir",       # vizier (21)
-    "foclu": "foc",           # fire (20)
-    "luplu": "lup",           # wolf (19)
-    "mãratlu": "mãrat",       # poor man (18)
-    "oarfãnlu": "oarfãn",     # orphan (17)
-    "arãulu": "arãu",         # bad one (14)
-    "perlu": "per",           # hair (14)
-    "neavutlu": "neavut",     # poor (14)
-    "cucotlu": "cucot",       # rooster (14)
-    "capidanlu": "capidan",   # captain (14)
-    "vãshiljelu": "vãshilje", # king (13)
-    "tserlu": "tser",         # sky (13)
-    "dorlu": "dor",           # longing (13)
-    "bunlu": "bun",           # good one (12)
-    "thiriulu": "thiriu",     # beast (11)
-    "hãngilu": "hãngi",       # inn (10)
-    "cãnticlu": "cãntic",     # song (10)
-    "maratlu": "marat",       # poor (10)
-    "chirolu": "chiro",       # time (10)
+    "ficiorlu": "ficior",
+    "ficiorlji": "ficior",
+    "caplu": "cap",
+    "amirãlu": "amirã",
+    "loclu": "loc",
+    "hiljilu": "hilji",
+    "aushlu": "aush",
+    "picurarlu": "picurar",
+    "araplu": "arap",
+    "njiclu": "njic",
+    "zborlu": "zbor",
+    "vizirlu": "vizir",
+    "foclu": "foc",
+    "luplu": "lup",
+    "mãratlu": "mãrat",
+    "oarfãnlu": "oarfãn",
+    "arãulu": "arãu",
+    "perlu": "per",
+    "neavutlu": "neavut",
+    "cucotlu": "cucot",
+    "capidanlu": "capidan",
+    "vãshiljelu": "vãshilje",
+    "tserlu": "tser",
+    "dorlu": "dor",
+    "bunlu": "bun",
+    "thiriulu": "thiriu",
+    "hãngilu": "hãngi",
+    "cãnticlu": "cãntic",
+    "maratlu": "marat",
+    "chirolu": "chiro",
     
-    # Feminine nouns with article -ea
-    "calea": "cale",          # way (74)
-    "mintea": "minte",        # mind (59)
-    "lumea": "lume",          # world (51)
-    "noaptea": "noapte",      # night (40)
-    "mutrea": "mutre",        # face (34)
-    "boatsea": "boatse",      # voice (20)
-    "muljearea": "muljare",   # woman (18)
-    "lamnjea": "lamnje",      # blade (18)
+    "calea": "cale",
+    "mintea": "minte",
+    "lumea": "lume",
+    "noaptea": "noapte",
+    "mutrea": "mutre",
+    "boatsea": "boatse",
+    "muljearea": "muljare",
+    "lamnjea": "lamnje",
     
-    # Plural with -lji (genitive/dative)
-    "ocljilji": "oclji",      # eyes (76)
-    "pãrintsãlji": "pãrinte", # parents (20)
-    "muntsãlji": "munte",     # mountains (16)
-    "sotslji": "sots",        # companions (15)
-    "oaminjilji": "om",       # people (14)
-    "cãnjilji": "cãne",       # dogs (13)
-    "turtsãlji": "turcu",     # Turks (12)
-    "gionjilji": "gione",     # brave ones (11)
-    "dratslji": "drac",       # devils (9)
-    "fratslji": "frate",      # brothers (9)
-    "dintsãlji": "dinte",     # teeth (9)
-    "oaspitslji": "oaspite",  # guests (8)
-    "picurarlji": "picurar",  # shepherds (6)
-    "ureclji": "ureaclje",    # ears (6)
-    "anghilji": "anghe",      # angels (6)
-    "armãnjilji": "armãn",    # Aromanians (6)
+    "ocljilji": "oclji",
+    "pãrintsãlji": "pãrinte",
+    "muntsãlji": "munte",
+    "sotslji": "sots",
+    "oaminjilji": "om",
+    "cãnjilji": "cãne",
+    "turtsãlji": "turcu",
+    "gionjilji": "gione",
+    "dratslji": "drac",
+    "fratslji": "frate",
+    "dintsãlji": "dinte",
+    "oaspitslji": "oaspite",
+    "picurarlji": "picurar",
+    "ureclji": "ureaclje",
+    "anghilji": "anghe",
+    "armãnjilji": "armãn",
     
-    # Common nouns - additional
     "omlu": "om",
     "omului": "om",
     "oaminji": "om",
@@ -290,7 +264,6 @@ NOUN_LEMMAS = {
     "vulpi": "vulpe",
 }
 
-# Adjective forms -> masculine singular
 ADJ_LEMMAS = {
     "buna": "bun",
     "bunã": "bun",
@@ -310,75 +283,56 @@ ADJ_LEMMAS = {
     "njits": "njic",
 }
 
-# ============================================================================
-# SUFFIX RULES - For regular morphology
-# ============================================================================
 
-# Noun article removal rules: (suffix_to_remove, suffix_to_add)
 NOUN_ARTICLE_RULES = [
-    # Masculine singular definite article
-    ("lu", ""),      # ficiorlu -> ficior, caplu -> cap
-    ("rlu", "r"),    # picurarlu -> picurar (keeps the r)
+    ("lu", ""),
+    ("rlu", "r"),
     
-    # Feminine singular definite article  
-    ("a", "ã"),      # casa -> casã, feata -> featã
-    ("ea", "e"),     # vulpea -> vulpe, mintea -> minte
+    ("a", "ã"),
+    ("ea", "e"),
     
-    # Masculine plural
-    ("lji", ""),     # ficiorlji -> ficior (approximately)
-    ("nji", "n"),    # oaminji -> oamin -> om
+    ("lji", ""),
+    ("nji", "n"),
     
-    # Genitive/Dative
-    ("lui", ""),     # ficiorului -> ficior
-    ("ului", ""),    # omului -> om
-    ("ãlji", "ã"),   # casãlji -> casã
+    ("lui", ""),
+    ("ului", ""),
+    ("ãlji", "ã"),
     
-    # Plural definite
-    ("lji", ""),     # ocljilji -> oclji
-    ("le", ""),      # casele -> case
-    ("lor", ""),     # caslor -> cas
+    ("lji", ""),
+    ("le", ""),
+    ("lor", ""),
 ]
 
-# Verb conjugation rules: (ending, base_ending, tense_info)
 VERB_RULES = [
-    # Perfect simplu (past simple)
-    ("irã", "", "past.3pl"),      # featsirã -> feats (approximately)
-    ("arã", "", "past.3pl"),      # loarã -> lo, bãgarã -> bãg
-    ("urã", "", "past.3pl"),      # vidzurã -> vidz
-    ("ãrã", "", "past.3pl"),      # dzãsirã -> dzãs
+    ("irã", "", "past.3pl"),
+    ("arã", "", "past.3pl"),
+    ("urã", "", "past.3pl"),
+    ("ãrã", "", "past.3pl"),
     
-    # Imperfect
-    ("ea", "", "impf.3sg"),       # dzãtsea -> dzãts, fãtsea -> fãts
-    ("eam", "", "impf.1sg"),      # fãtseam -> fãts
+    ("ea", "", "impf.3sg"),
+    ("eam", "", "impf.1sg"),
     ("eai", "", "impf.2sg"),
     ("eau", "", "impf.3pl"),
     
-    # Present participle / Gerund
-    ("ãndu", "", "ger"),          # fãtsãndu -> fãts
-    ("indu", "", "ger"),          # vidzindu -> vidz
+    ("ãndu", "", "ger"),
+    ("indu", "", "ger"),
     
-    # Subjunctive (often same as infinitive stem)
-    ("ã", "", "subj.3sg"),        # s-facã -> fac, s-hibã -> hib
+    ("ã", "", "subj.3sg"),
     
-    # Infinitive lung (long infinitive as noun)
-    ("are", "", "inf"),           # fãtseare -> fãts (doing)
+    ("are", "", "inf"),
     ("ire", "", "inf"),           
     ("ere", "", "inf"),
 ]
 
-# Adjective agreement rules
 ADJ_RULES = [
-    # Feminine singular
-    ("ã", "", "f.sg"),            # bunã -> bun, albã -> alb
-    ("oasã", "os", "f.sg"),       # frumoasã -> frumos
+    ("ã", "", "f.sg"),
+    ("oasã", "os", "f.sg"),
     
-    # Feminine with article
-    ("a", "", "f.sg.def"),        # buna -> bun, marea -> mar (not perfect)
+    ("a", "", "f.sg.def"),
     
-    # Plural
-    ("i", "", "pl"),              # buni -> bun, mari -> mar
-    ("e", "", "f.pl"),            # bune -> bun
-    ("shi", "s", "m.pl"),         # frumoshi -> frumos
+    ("i", "", "pl"),
+    ("e", "", "f.pl"),
+    ("shi", "s", "m.pl"),
 ]
 
 
@@ -386,11 +340,9 @@ def lemmatize_noun(word: str) -> str:
     """Lemmatize a noun by removing article suffixes."""
     word_lower = word.lower()
     
-    # Check lookup first
     if word_lower in NOUN_LEMMAS:
         return NOUN_LEMMAS[word_lower]
     
-    # Apply suffix rules
     for suffix, replacement in NOUN_ARTICLE_RULES:
         if word_lower.endswith(suffix) and len(word_lower) > len(suffix) + 1:
             return word_lower[:-len(suffix)] + replacement
@@ -402,15 +354,12 @@ def lemmatize_verb(word: str) -> str:
     """Lemmatize a verb to its dictionary form."""
     word_lower = word.lower()
     
-    # Check lookup first
     if word_lower in VERB_LEMMAS:
         return VERB_LEMMAS[word_lower]
     
-    # Apply suffix rules
     for suffix, replacement, _ in VERB_RULES:
         if word_lower.endswith(suffix) and len(word_lower) > len(suffix) + 1:
             stem = word_lower[:-len(suffix)] + replacement
-            # Try to find a known verb with this stem
             return stem
     
     return word_lower
@@ -420,11 +369,9 @@ def lemmatize_adj(word: str) -> str:
     """Lemmatize an adjective to masculine singular."""
     word_lower = word.lower()
     
-    # Check lookup first
     if word_lower in ADJ_LEMMAS:
         return ADJ_LEMMAS[word_lower]
     
-    # Apply suffix rules
     for suffix, replacement, _ in ADJ_RULES:
         if word_lower.endswith(suffix) and len(word_lower) > len(suffix) + 1:
             return word_lower[:-len(suffix)] + replacement
@@ -448,7 +395,6 @@ def lemmatize(word: str, pos: Optional[str] = None) -> str:
     
     word_lower = word.lower()
     
-    # If POS is known, use specific lemmatizer
     if pos == "VERB":
         return lemmatize_verb(word)
     elif pos == "NOUN":
@@ -456,7 +402,6 @@ def lemmatize(word: str, pos: Optional[str] = None) -> str:
     elif pos == "ADJ":
         return lemmatize_adj(word)
     
-    # Without POS, try all lookups first
     if word_lower in VERB_LEMMAS:
         return VERB_LEMMAS[word_lower]
     if word_lower in NOUN_LEMMAS:
@@ -464,39 +409,31 @@ def lemmatize(word: str, pos: Optional[str] = None) -> str:
     if word_lower in ADJ_LEMMAS:
         return ADJ_LEMMAS[word_lower]
     
-    # Heuristic: try noun rules (most common)
-    # Check for common noun article patterns
     if word_lower.endswith(("lu", "a", "ea", "lji", "lor", "lui")):
         return lemmatize_noun(word)
     
-    # Check for verb patterns
     if word_lower.endswith(("irã", "arã", "urã", "ea", "ãndu")):
         return lemmatize_verb(word)
     
     return word_lower
 
 
-# For testing
 if __name__ == "__main__":
     test_words = [
-        # Nouns with article
         ("ficiorlu", "NOUN"),
         ("caplu", "NOUN"),
         ("vulpea", "NOUN"),
         ("casa", "NOUN"),
         ("omlu", "NOUN"),
         
-        # Verbs
         ("featsirã", "VERB"),
         ("dzãse", "VERB"),
         ("avea", "VERB"),
         ("eara", "VERB"),
         
-        # Adjectives
         ("bunã", "ADJ"),
         ("marea", "ADJ"),
         
-        # Without POS
         ("ficiorlu", None),
         ("dzãsirã", None),
     ]

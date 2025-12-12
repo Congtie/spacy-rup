@@ -1,11 +1,3 @@
-# Stop words for Aromanian
-# Based on analysis of the senisioi/aromanian corpus
-# Includes both DIARO and Cunia orthographic variants
-#
-# Sources:
-# - Frequency analysis of corpus.rup_cun and corpus.rup_std
-# - Top ~200 most frequent function words
-# - AroTranslate corpus (Tales dataset ~2000 sentences)
 
 STOP_WORDS = set(
     """
@@ -197,12 +189,9 @@ zã
 .split()
 )
 
-# Add variants with different orthographic standards
 _cunia_variants = set()
 _diaro_variants = set()
 
-# Cunia uses: ã, dz, lj, nj, sh, ts
-# DIARO uses: ă, â, î, d̦, ľ, ń, ș, ț
 
 _orthography_map = {
     "ã": ["ă", "â", "î"],
@@ -213,7 +202,6 @@ _orthography_map = {
     "dz": ["d̦"],
 }
 
-# Add common Romanian stop words that may appear in mixed texts
 _romanian_common = [
     "și", "sau", "dar", "că", "de", "la", "în", "pe", "cu", "pentru",
     "este", "sunt", "era", "fost", "fi", "care", "ce", "nu", "da",
@@ -221,4 +209,4 @@ _romanian_common = [
     "când", "unde", "cum", "cât", "până", "prin", "spre", "între",
 ]
 
-STOP_WORDS = STOP_WORDS.union(_romanian_common)  # type: ignore
+STOP_WORDS = STOP_WORDS.union(_romanian_common)

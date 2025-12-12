@@ -1,5 +1,4 @@
-﻿# Punctuation rules for Aromanian
-# Based on Romanian punctuation rules with adaptations for Aromanian orthography
+﻿
 
 import itertools
 
@@ -21,20 +20,15 @@ _list_icons = [x for x in LIST_ICONS if x != "Â°"]
 _list_icons = [x.replace("\\u00B0", "") for x in _list_icons]
 
 
-# Aromanian orthographic variants mapping
-# Handles both DIARO and Cunia standards
 _rup_variants = {
-    # Central vowels - DIARO vs Cunia
     "Ă": ["Ă", "ã", "A"],
     "Â": ["Â", "ã", "A"],
     "Î": ["Î", "ã", "I"],
-    # Consonants with cedilla/special chars
-    "Ș": ["Ș", "Ş", "S"],  # DIARO
-    "Ț": ["Ț", "Ţ", "T"],  # DIARO
-    # Cunia digraphs are handled separately
-    "Ľ": ["Ľ", "L"],  # DIARO palatal l
-    "Ń": ["Ń", "Ñ", "N"],  # DIARO palatal n
-    "D̦": ["D̦", "D"],  # DIARO dz
+    "Ș": ["Ș", "Ş", "S"],
+    "Ț": ["Ț", "Ţ", "T"],
+    "Ľ": ["Ľ", "L"],
+    "Ń": ["Ń", "Ñ", "N"],
+    "D̦": ["D̦", "D"],
 }
 
 
@@ -49,7 +43,6 @@ def _make_rup_variants(tokens):
     """
     all_tokens = []
     for token in tokens:
-        # Generate combinations for each character
         char_variants = []
         i = 0
         while i < len(token):
@@ -59,7 +52,6 @@ def _make_rup_variants(tokens):
                 if token[i].islower():
                     variants = [v.lower() for v in variants]
                 char_variants.append(variants)
-            # Handle Cunia digraphs
             elif i + 1 < len(token):
                 digraph = token[i:i+2].lower()
                 if digraph == "sh":
@@ -83,22 +75,18 @@ def _make_rup_variants(tokens):
                 char_variants.append([token[i]])
             i += 1
         
-        # Generate all combinations
         for combo in itertools.product(*char_variants):
             all_tokens.append("".join(combo))
     
     return list(set(all_tokens))
 
 
-# Aromanian closed class prefixes (clitics and particles)
-# Similar to Romanian but with Aromanian phonology
 _rup_prefixes = [
-    # Prepositions with elision
     "a-",
-    "c-",  # cu (with)
+    "c-",
     "ca-",
     "cu-",
-    "d-",  # di (of/from)
+    "d-",
     "di-",
     "dintr-",
     "e-",
@@ -128,7 +116,6 @@ _rup_prefixes = [
     "u-",
     "v-",
     "va-",
-    # Greek-influenced particles
     "sh-",
     "shi-",
     "ș-",
@@ -139,9 +126,7 @@ _rup_prefixes = [
 _rup_prefix_variants = _make_rup_variants(_rup_prefixes)
 
 
-# Aromanian closed class suffixes (clitics, articles, etc.)
 _rup_suffixes = [
-    # Definite articles and case markers
     "-a",
     "-lu",
     "-lji",
@@ -150,14 +135,12 @@ _rup_suffixes = [
     "-lor",
     "-lui",
     "-li",
-    # Demonstrative clitics
     "-aestu",
     "-aestã",
     "-aesta",
     "-atsea",
     "-atsel",
     "-atselu",
-    # Personal pronoun clitics
     "-mi",
     "-mã",
     "-ti",
@@ -169,29 +152,22 @@ _rup_suffixes = [
     "-lji",
     "-li",
     "-lor",
-    # Possessive clitics
-    "-nju",  # my
-    "-ta",   # your
-    "-su",   # his/her
+    "-nju",
+    "-ta",
+    "-su",
     "-nostru",
     "-vostru",
-    # Auxiliary verb clitics
     "-s",
     "-escu",
-    # Question particle
     "-i",
-    # Emphatic particles
     "-sh",
     "-va",
-    # Ordinal suffixes (like Romanian)
     "-lea",
     "-a",
-    # Cunia variants
     "-sh",
     "-ts",
     "-lj",
     "-nj",
-    # DIARO variants
     "-ș",
     "-ț",
     "-ľ",
@@ -242,11 +218,7 @@ _infixes = (
         ),
         r"(?<=[{a}]),(?=[{a}])".format(a=ALPHA),
         r"(?<=[{a}0-9])[:<>=](?=[{a}])".format(a=ALPHA),
-        # Handle Aromanian apostrophe in words like l'imba
         r"(?<=[{a}])'(?=[{a}])".format(a=ALPHA),
-        # NOTE: We do NOT include hyphen as a general infix
-        # because it would split compound proper nouns like Masturlu-Nicola
-        # Clitic splitting is handled by prefix rules (s-, sh-, n-, etc.)
     ]
 )
 

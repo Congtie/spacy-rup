@@ -1,14 +1,12 @@
-﻿# Aromanian Lemmatizer component for spaCy
-# Based on lookup tables and suffix rules
+﻿
 
 from spacy.language import Language
 from spacy.tokens import Doc, Token
 
 from .lemmatizer import lemmatize, VERB_LEMMAS, NOUN_LEMMAS, ADJ_LEMMAS
 
-# Register the lemma extension if not already registered
 if not Token.has_extension('lemma_'):
-    pass  # lemma_ is already a built-in attribute
+    pass
 
 @Language.factory(
     'aromanian_lemmatizer',
@@ -38,11 +36,9 @@ class AromanianLemmatizer:
     def __call__(self, doc: Doc) -> Doc:
         '''Process a document, assigning lemmas to tokens.'''
         for token in doc:
-            # Skip if lemma already set and not overwriting
             if token.lemma != 0 and not self.overwrite:
                 continue
             
-            # Get lemma based on POS if available
             pos = token.pos_ if token.pos_ else None
             lemma = lemmatize(token.text, pos)
             token.lemma_ = lemma
@@ -56,7 +52,6 @@ class AromanianLemmatizer:
         return self
 
 
-# Convenience function for standalone lemmatization
 def lemmatize_text(text: str, nlp=None) -> list:
     '''
     Lemmatize a text string and return list of (token, lemma) pairs.
@@ -64,7 +59,6 @@ def lemmatize_text(text: str, nlp=None) -> list:
     If nlp is not provided, creates a simple tokenizer.
     '''
     if nlp is None:
-        # Create minimal pipeline
         import spacy
         nlp = spacy.blank('rup')
         nlp.add_pipe('aromanian_lemmatizer')
