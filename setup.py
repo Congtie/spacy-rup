@@ -8,6 +8,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'spacy>=3.0.0',
+        'scikit-learn',
     ],
     entry_points={
         'spacy_languages': [

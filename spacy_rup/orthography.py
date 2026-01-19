@@ -248,6 +248,8 @@ def load_resources():
                 
     except Exception as e:
         print(f"Warning: Could not load resources: {e}")
+        import traceback
+        traceback.print_exc()
 
 # Load on module import
 load_resources()

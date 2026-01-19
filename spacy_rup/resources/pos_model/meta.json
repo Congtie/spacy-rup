@@ -34,18 +34,13 @@
       "NUM",
       "INTJ",
       "X"
-    ],
-    "attribute_ruler":[
-
     ]
   },
   "pipeline":[
-    "tagger",
-    "attribute_ruler"
+    "tagger"
   ],
   "components":[
-    "tagger",
-    "attribute_ruler"
+    "tagger"
   ],
   "disabled":[
 

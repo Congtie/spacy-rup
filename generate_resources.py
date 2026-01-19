@@ -2,6 +2,10 @@
 import json
 import re
 from collections import defaultdict
+import pickle
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import Pipeline
 from pathlib import Path
 
 def generate_frequency_maps(corpus_path, output_dir):
@@ -72,9 +76,61 @@ def generate_frequency_maps(corpus_path, output_dir):
         
     print(f"Maps saved to {output_dir}")
 
+def train_model(corpus_std, corpus_cun, output_dir):
+    """
+    Train a simple Naive Bayes model to distinguish between Standard (DIARO) and Cunia.
+    """
+    print("Training Orthography Identification Model...")
+    
+    texts = []
+    labels = []
+    
+    # Load DIARO data
+    if Path(corpus_std).exists():
+        with open(corpus_std, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    texts.append(line.strip())
+                    labels.append("diaro")
+    else:
+        print(f"Warning: DIARO corpus not found at {corpus_std}")
+
+    # Load Cunia data
+    if Path(corpus_cun).exists():
+        with open(corpus_cun, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    texts.append(line.strip())
+                    labels.append("cunia")
+    else:
+        print(f"Warning: Cunia corpus not found at {corpus_cun}")
+        
+    if not texts:
+        print("No training data found for model!")
+        return
+
+    # Train Pipeline
+    pipeline = Pipeline([
+        ('tfidf', TfidfVectorizer(analyzer='char', ngram_range=(2, 4))),
+        ('clf', MultinomialNB()),
+    ])
+    
+    pipeline.fit(texts, labels)
+    
+    # Save
+    output_path = Path(output_dir) / "orthography_model.pkl"
+    with open(output_path, "wb") as f:
+        pickle.dump(pipeline, f)
+        
+    print(f"Model saved to {output_path}")
+
 if __name__ == "__main__":
     # Adjust paths as needed
-    CORPUS_FILE = r"c:\Users\Taka\Desktop\spacy-rup\data\unsplit\corpus.rup_std"
-    OUTPUT_DIR = r"c:\Users\Taka\Desktop\spacy-rup\spacy_rup\resources"
+    # Adjust paths as needed
+    base_dir = Path(__file__).parent
+    CORPUS_FILE = base_dir / "data" / "unsplit" / "corpus.rup_std"
+    CORPUS_CUN = base_dir / "data" / "unsplit" / "corpus.rup_cun"
+    OUTPUT_DIR = base_dir / "spacy_rup" / "resources"
     
     generate_frequency_maps(CORPUS_FILE, OUTPUT_DIR)
+    train_model(CORPUS_FILE, CORPUS_CUN, OUTPUT_DIR)
