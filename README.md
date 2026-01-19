@@ -20,8 +20,8 @@ A complete spaCy language module for **Aromanian** (Macedo-Romanian), an endange
 | Lex Attrs | :white_check_mark: | Number detection (un, doi, trei, dzatsi...) |
 | Orthography | :white_check_mark: | Conversion between Cunia and DIARO standards |
 | **Lemmatizer** | :white_check_mark: | Lookup tables + suffix rules for verbs, nouns, adjectives |
-| POS Tagger | :x: | Requires training data |
-| NER | :x: | Requires training data |
+| POS Tagger | :white_check_mark: | Trained via `train_pos_model.py` |
+| NER | :white_check_mark: | Trained via `train_ner_model.py` |
 
 ## Installation
 
@@ -127,6 +127,29 @@ detect_orthography("Shi una vulpe")  # "cunia"
 text_diaro = "Și una vulpe"
 text_cunia = to_cunia(text_diaro)  # "Shi una vulpe"
 ```
+
+
+## Training
+
+You can train your own POS Tagger and Named Entity Recognizer using the provided scripts.
+
+### POS Tagger Training
+
+1. Ensure training data is at `data/train.rup.conll`
+2. Run the training script:
+   ```bash
+   python train_pos_model.py
+   ```
+   The model will be saved to `spacy_rup/resources/pos_model`.
+
+### NER Training
+
+1. Ensure training data is at `data/train.rup.ner.json`
+2. Run the training script:
+   ```bash
+   python train_ner_model.py
+   ```
+   The model will be saved to `spacy_rup/resources/ner_model`.
 
 ## Project Structure
 
