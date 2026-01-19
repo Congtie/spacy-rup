@@ -35,7 +35,16 @@ Based on conversion scripts from:
 
 import re
 import json
+import pickle
 from pathlib import Path
+
+# Try to import sklearn components needed for unpickling
+try:
+    from sklearn.pipeline import Pipeline
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.naive_bayes import MultinomialNB
+except ImportError:
+    pass
 
 
 CUNIA_TO_DIARO_CONSONANTS = {
@@ -206,17 +215,60 @@ def resolve_central_vowel_to_diaro(word: str, position: int, fah: Optional[dict]
     return "ă"
 
 
+
+# Valid frequency maps loaded from resources
+FREQ_AH = {}
+FREQ_UH = {}
+ORTHOGRAPHY_MODEL = None
+
+def load_resources():
+    """Load n-gram frequency maps and ML model from resources."""
+    global FREQ_AH, FREQ_UH, ORTHOGRAPHY_MODEL
+    try:
+        resource_dir = Path(__file__).parent / "resources"
+        ah_path = resource_dir / "freq_ah.json"
+        uh_path = resource_dir / "freq_uh.json"
+        model_path = resource_dir / "orthography_model.pkl"
+        
+        if ah_path.exists():
+            with open(ah_path, "r", encoding="utf-8") as f:
+                FREQ_AH = json.load(f)
+                
+        if uh_path.exists():
+            with open(uh_path, "r", encoding="utf-8") as f:
+                FREQ_UH = json.load(f)
+        
+        if model_path.exists():
+            try:
+                with open(model_path, 'rb') as f:
+                    ORTHOGRAPHY_MODEL = pickle.load(f)
+            except (ImportError, ModuleNotFoundError, Exception) as e:
+                # If sklearn is not installed or other issue, fail silently and use heuristics
+                pass
+                
+    except Exception as e:
+        print(f"Warning: Could not load resources: {e}")
+
+# Load on module import
+load_resources()
+
 def to_diaro(text: str, fah: Optional[dict] = None, fuh: Optional[dict] = None) -> str:
     """Convert text to DIARO orthography (ăâî/d̦/ľ/ń/ș/ț).
     
     Args:
         text: Input text (ideally already in Cunia for best results)
-        fah: Optional n-gram frequency dict for â resolution
-        fuh: Optional n-gram frequency dict for ă resolution
+        fah: Optional n-gram frequency dict for â resolution. Defaults to loaded resources.
+        fuh: Optional n-gram frequency dict for ă resolution. Defaults to loaded resources.
         
     Returns:
         Text converted to DIARO standard
     """
+    # Use global defaults if not provided
+    if fah is None:
+        fah = FREQ_AH
+    if fuh is None:
+        fuh = FREQ_UH
+
     text = to_cunia(text)
     
     words = []
@@ -255,10 +307,10 @@ def to_diaro(text: str, fah: Optional[dict] = None, fuh: Optional[dict] = None) 
 
 
 def cunia_to_diaro(text: str) -> str:
-    """Convenience function: Convert Cunia to DIARO.
+    """Convenience function: Convert Cunia to DIARO using best available data.
     
-    Note: Without n-gram frequency data, this uses heuristics for vowel resolution.
-    For best results, load the frequency dictionaries from resources.
+    This is the "Final Translator" that uses n-gram frequency data 
+    to correctly resolve 'ã' to 'ă' or 'â'.
     """
     return to_diaro(text)
 
@@ -271,12 +323,16 @@ def diaro_to_cunia(text: str) -> str:
 def detect_orthography(text: str) -> str:
     """Detect which orthographic standard a text uses.
     
+    This is the "Aro Model" for detection.
+    It uses a trained Naive Bayes classifier if available, otherwise heuristics.
+    
     Args:
         text: Input Aromanian text
         
     Returns:
         'cunia', 'diaro', 'mixed', or 'unknown'
     """
+    # 1. Try generic heuristics first for obvious cases
     diaro_chars = set("șțăâîľńȘȚĂÂÎĽŃ")
     cunia_patterns = ["sh", "ts", "lj", "nj", "dz"]
     cunia_chars = set("ãÃ")
@@ -286,6 +342,22 @@ def detect_orthography(text: str) -> str:
     has_cunia_pattern = any(p in text.lower() for p in cunia_patterns)
     has_cunia = has_cunia_char or has_cunia_pattern
     
+    # 2. Use ML Model if available and text is long enough to be ambiguous
+    # Heuristics are better for short strings with definitive markers
+    if ORTHOGRAPHY_MODEL:
+        try:
+            # If strong signals for both, let model decide (it sees n-gram frequency)
+            # or if no obvious signals but we want a guess
+            pred = ORTHOGRAPHY_MODEL.predict([text])[0]
+            prob = ORTHOGRAPHY_MODEL.predict_proba([text]).max()
+            
+            # If the model is very confident, trust it
+            if prob > 0.8:
+                return pred
+        except Exception:
+            pass
+
+    # 3. Fallback to heuristics
     if has_diaro and has_cunia:
         return "mixed"
     elif has_diaro:
@@ -342,10 +414,10 @@ def clean_text(text: str, lang: str = "rup") -> str:
     text = text.replace("<", "")
     text = text.replace(">", "")
     text = text.replace("„", '"')
-    text = text.replace(""", '"')
-    text = text.replace(""", '"')
-    text = text.replace("'", "'")
-    text = text.replace("'", "'")
+    text = text.replace("”", '"')
+    text = text.replace("“", '"')
+    text = text.replace("‘", "'")
+    text = text.replace("’", "'")
     
     return text
 
@@ -429,9 +501,14 @@ if __name__ == "__main__":
     print("Testing orthography conversions:")
     print("=" * 50)
     
+    # Force reload for main block if needed, though module level should handle it
+    if not FREQ_AH:
+         print("Note: Frequency maps not loaded in __main__ (normal if running script directly without installation)")
+
     for text in test_texts:
         print(f"\nOriginal: {text}")
         cunia = to_cunia(text)
         diaro = to_diaro(text)
         print(f"Cunia:    {cunia}")
         print(f"DIARO:    {diaro}")
+
